@@ -142,27 +142,73 @@ div[data-baseweb="select"] > div:hover { background: var(--glass-strong); }
 .dist .count span { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-left: 3px; }
 
 /* ---------- 상위 5개 ---------- */
-.rank { background: var(--glass); border: 1px solid var(--line); border-radius: 22px; padding: 8px; }
+.rank {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 8px;
+}
+
 .rank-row {
     display: grid;
-    grid-template-columns: 32px 1fr auto auto;
-    align-items: center; gap: 12px;
-    padding: 11px 12px; border-radius: 14px;
+    grid-template-columns: 28px minmax(0, 1fr) 48px max-content;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 8px;
+    border-radius: 14px;
     transition: background .2s var(--ease);
 }
-.rank-row:hover { background: var(--glass-strong); }
+
+.rank-row:hover {
+    background: var(--glass-strong);
+}
+
 .rank-row .no {
-    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-    border-radius: 9px; background: rgba(255,255,255,0.06);
-    color: var(--muted); font-weight: 700; font-size: 0.8rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 0.8rem;
 }
-.rank-row.top .no { background: var(--c); color: #0A0E16; }
-.rank-row .area { font-weight: 600; font-size: 0.92rem; white-space: nowrap; }
-.rank-row .num { font-weight: 700; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+
+.rank-row.top .no {
+    background: var(--c);
+    color: #0A0E16;
+}
+
+.rank-row .area {
+    font-weight: 600;
+    font-size: 0.88rem;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.rank-row .num {
+    font-weight: 700;
+    font-size: 0.88rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-align: right;
+}
+
 .rank-row .chip {
-    padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 600;
-    color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent);
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 15%, transparent);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
+
 
 /* ---------- 지도 ---------- */
 div[data-testid="stPlotlyChart"] {
