@@ -48,173 +48,194 @@ CSS = """
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
 
-html, body, [class*="css"], .stMarkdown, .stDataFrame {
+:root {
+    --bg: #0A0E16;
+    --glass: rgba(255,255,255,0.045);
+    --glass-strong: rgba(255,255,255,0.07);
+    --line: rgba(255,255,255,0.09);
+    --text: #F1F4F9;
+    --muted: #8F9AAB;
+    --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+#MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
+
+.stApp {
+    background:
+        radial-gradient(900px 480px at 8% -8%, rgba(56,189,248,0.13), transparent 60%),
+        radial-gradient(900px 480px at 96% -4%, rgba(248,113,113,0.13), transparent 60%),
+        var(--bg);
+    color: var(--text);
+}
+html, body, [class*="css"], .stMarkdown, .stApp {
     font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
 }
 .block-container {
-    padding-top: 2.2rem;
+    padding-top: 2rem;
     padding-bottom: 3rem;
-    max-width: 1180px;
+    max-width: 1120px;
 }
 
-.hero {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 28px 34px 26px 34px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 24px;
+/* ---------- 히어로 ---------- */
+.hero { padding: 36px 0 26px 0; animation: rise .7s var(--ease) both; }
+.hero .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--glass); border: 1px solid var(--line);
+    color: var(--muted); font-size: 0.82rem; font-weight: 500;
+    margin-bottom: 18px;
 }
-.hero::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #38BDF8 0%, #FBBF24 55%, #F87171 100%);
+.hero .pill i {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(90deg, #38BDF8, #F87171);
 }
 .hero h1 {
-    font-size: 1.9rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin: 0 0 8px 0;
-    padding: 0;
+    font-size: 2.5rem; font-weight: 800; letter-spacing: -0.035em;
+    line-height: 1.15; margin: 0 0 12px 0; padding: 0;
+    background: linear-gradient(90deg, #7DD3FC 0%, #FDE68A 50%, #FCA5A5 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; width: fit-content;
 }
-.hero .desc {
-    color: #9AA4B2;
-    line-height: 1.7;
-    font-size: 0.95rem;
-}
-
-.sec-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin: 34px 0 4px 0;
-}
-.sec-desc {
-    color: #9AA4B2;
-    font-size: 0.9rem;
-    margin-bottom: 16px;
-}
-.panel-title {
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 6px 0 4px 0;
+.hero .desc { color: var(--muted); line-height: 1.75; font-size: 0.98rem; max-width: 680px; }
+@keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 군집 카드 */
+/* ---------- 섹션 제목 ---------- */
+.sec-title { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin: 44px 0 4px 0; }
+.sec-desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
+.panel-title { font-weight: 700; font-size: 1rem; margin: 10px 0 4px 0; letter-spacing: -0.01em; }
+
+/* ---------- 군집 카드 ---------- */
 .cl {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-left: 4px solid var(--c);
-    border-radius: 14px;
-    padding: 18px 22px;
-    height: 100%;
+    position: relative; overflow: hidden;
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; padding: 24px 26px; height: 100%;
+    transition: background .25s var(--ease);
 }
-.cl .name { color: var(--c); font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
-.cl .value { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
-.cl .unit { font-size: 1rem; font-weight: 600; color: #9AA4B2; margin-left: 4px; }
-.cl .share { color: #9AA4B2; font-size: 0.85rem; margin-top: 6px; }
+.cl:hover { background: var(--glass-strong); }
+.cl::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--c);
+}
+.cl .name { color: var(--c); font-weight: 700; font-size: 0.95rem; margin-bottom: 14px; }
+.cl .value { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.cl .unit { font-size: 0.95rem; font-weight: 600; color: var(--muted); margin-left: 5px; }
+.cl .share { color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
 
 /* 구성비 막대 */
-.stack {
-    display: flex;
-    height: 34px;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 16px;
-}
+.stack { display: flex; gap: 4px; height: 44px; margin-top: 18px; }
 .stack div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #0E1117;
-    white-space: nowrap;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; color: #0A0E16;
+    white-space: nowrap; min-width: 6px;
+    transition: filter .2s var(--ease), transform .2s var(--ease);
 }
+.stack div:first-child { border-radius: 14px 5px 5px 14px; }
+.stack div:last-child  { border-radius: 5px 14px 14px 5px; }
+.stack div:hover { filter: brightness(1.12); transform: translateY(-2px); }
 
-/* 일반 KPI */
+/* ---------- 일반 KPI ---------- */
 .kpi {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 18px 22px;
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; padding: 22px 26px;
 }
-.kpi .label { color: #9AA4B2; font-size: 0.85rem; margin-bottom: 8px; }
-.kpi .value { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
-.kpi .note { color: #9AA4B2; font-size: 0.82rem; margin-top: 8px; }
+.kpi .label { color: var(--muted); font-size: 0.88rem; margin-bottom: 12px; }
+.kpi .value { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.kpi .note { color: var(--muted); font-size: 0.82rem; margin-top: 12px; }
 
-/* 평균 특성 표 */
+/* ---------- 탭 ---------- */
+div[data-baseweb="tab-list"] {
+    gap: 6px; background: var(--glass); border: 1px solid var(--line);
+    border-radius: 14px; padding: 5px; width: fit-content;
+}
+button[data-baseweb="tab"] {
+    height: 38px; padding: 0 18px; border-radius: 10px;
+    background: transparent; color: var(--muted); font-weight: 600;
+    transition: background .2s var(--ease), color .2s var(--ease);
+}
+button[data-baseweb="tab"][aria-selected="true"] { background: var(--glass-strong); color: var(--text); }
+div[data-baseweb="tab-highlight"], div[data-baseweb="tab-border"] { display: none; }
+
+/* ---------- 라디오 (군집 선택) ---------- */
+div[role="radiogroup"] { gap: 8px; }
+div[role="radiogroup"] > label {
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 999px; padding: 8px 18px;
+    transition: background .2s var(--ease);
+}
+div[role="radiogroup"] > label:hover { background: var(--glass-strong); }
+div[role="radiogroup"] > label:has(input:checked) {
+    background: var(--glass-strong); border-color: rgba(255,255,255,0.28);
+}
+
+/* ---------- 평균 특성 표 ---------- */
 .rank-wrap {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    overflow: hidden;
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; padding: 8px; overflow-x: auto;
 }
 .rank-table { width: 100%; border-collapse: collapse; }
 .rank-table th {
-    text-align: left;
-    color: #9AA4B2;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 11px 14px;
-    background: rgba(255,255,255,0.03);
-    white-space: nowrap;
+    text-align: left; color: var(--muted); font-size: 0.8rem; font-weight: 600;
+    padding: 12px 14px; white-space: nowrap;
 }
 .rank-table td {
-    padding: 12px 14px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.92rem;
-    white-space: nowrap;
-    vertical-align: middle;
+    padding: 14px; border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.92rem; white-space: nowrap; vertical-align: middle;
 }
+.rank-table tbody tr { transition: background .2s var(--ease); }
+.rank-table tbody tr:hover { background: var(--glass-strong); }
 .rank-table .dot {
-    display: inline-block;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    margin-right: 8px;
-    background: var(--c);
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 50%; margin-right: 10px; background: var(--c);
 }
 .rank-table .nm { font-weight: 700; }
 .rank-table .score { display: flex; align-items: center; gap: 10px; min-width: 120px; }
-.rank-table .track {
-    flex: 1;
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
+.rank-table .track { flex: 1; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.07); }
+.rank-table .fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, transparent), var(--c));
 }
-.rank-table .fill { height: 100%; border-radius: 999px; background: var(--c); }
-.rank-table .num { font-weight: 700; min-width: 42px; text-align: right; }
+.rank-table .num { font-weight: 700; min-width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
 
-/* 군집 프로필 카드 */
+/* ---------- 군집 프로필 ---------- */
 .profile {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-top: 4px solid var(--c);
-    border-radius: 14px;
-    padding: 18px 20px 10px 20px;
+    position: relative; overflow: hidden;
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; padding: 24px 24px 12px 24px;
 }
-.profile .name { color: var(--c); font-weight: 800; font-size: 1.1rem; }
-.profile .cnt { color: #9AA4B2; font-size: 0.85rem; margin: 4px 0 12px 0; }
+.profile::before {
+    content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--c);
+}
+.profile .name { color: var(--c); font-weight: 800; font-size: 1.15rem; letter-spacing: -0.01em; }
+.profile .cnt { color: var(--muted); font-size: 0.85rem; margin: 6px 0 14px 0; }
 .profile .row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.9rem;
+    display: flex; justify-content: space-between;
+    padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem;
 }
-.profile .row span:first-child { color: #9AA4B2; }
-.profile .row span:last-child { font-weight: 700; }
+.profile .row span:first-child { color: var(--muted); }
+.profile .row span:last-child { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* ---------- 차트·표 테두리 ---------- */
+div[data-testid="stPlotlyChart"] {
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; overflow: hidden; padding: 6px 6px 0 6px;
+}
+div[data-testid="stDataFrame"] {
+    border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
+}
 
 .footer {
-    text-align: center;
-    color: #6B7482;
-    font-size: 0.8rem;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    text-align: center; color: #657084; font-size: 0.8rem;
+    margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line);
+}
+
+@media (max-width: 720px) {
+    .hero h1 { font-size: 1.9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
 }
 </style>
 """
@@ -234,8 +255,9 @@ def load_data():
 st.markdown(
     """
 <div class="hero">
-<h1>📊 기후복지 취약지역 군집 분석</h1>
-<div class="desc">K-Means 알고리즘으로 전국 시군구를 기후재난 취약 특성에 따라 3개 군집으로 나눴습니다. 군집별 인구 특성, 기후 위험, 쉼터 현황을 비교해 보세요.</div>
+<div class="pill"><i></i>K-Means 군집 분석</div>
+<h1>기후복지 취약지역 군집 분석</h1>
+<div class="desc">전국 시군구를 기후재난 취약 특성에 따라 3개 군집으로 나눴습니다. 군집별 인구 특성, 기후 위험, 쉼터 현황을 비교해 보세요.</div>
 </div>
 """,
     unsafe_allow_html=True,
@@ -291,9 +313,11 @@ for col, cid in zip(cols, sorted(CLUSTER_NAMES)):
 segments = ""
 for cid in sorted(CLUSTER_NAMES):
     n = int(cluster_counts.get(cid, 0))
+    if n == 0:
+        continue
     pct = n / total * 100
     label = f"{pct:.0f}%" if pct >= 8 else ""
-    segments += f'<div style="width:{pct:.2f}%;background:{CLUSTER_COLORS[cid]}">{label}</div>'
+    segments += f'<div style="flex:{n};background:{CLUSTER_COLORS[cid]}">{label}</div>'
 
 st.markdown(f'<div class="stack">{segments}</div>', unsafe_allow_html=True)
 
@@ -322,7 +346,7 @@ def make_bar(column, label):
     fig.update_traces(
         texttemplate="%{y:.2f}",
         textposition="outside",
-        textfont=dict(size=14, color="#E5E9F0"),
+        textfont=dict(size=14, color="#F1F4F9"),
         marker_line_width=0,
         cliponaxis=False,
         hovertemplate="%{x}<br>" + label + ": %{y:.2f}<extra></extra>",
@@ -333,7 +357,7 @@ def make_bar(column, label):
         height=320,
         bargap=0.5,
         showlegend=False,
-        margin=dict(t=20, b=10, l=10, r=10),
+        margin=dict(t=30, b=10, l=10, r=10),
         xaxis=dict(title=None, showgrid=False, tickfont=dict(size=13)),
         yaxis=dict(
             title=None,
@@ -342,6 +366,11 @@ def make_bar(column, label):
             zeroline=False,
             showticklabels=False,
             range=[0, max(cluster_mean[column].max(), 1e-9) * 1.25],
+        ),
+        hoverlabel=dict(
+            bgcolor="#161B26",
+            bordercolor="rgba(255,255,255,0.15)",
+            font=dict(color="#F1F4F9", size=13),
         ),
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
@@ -450,6 +479,8 @@ region_df = df[df["군집_K3"] == selected_cluster][
 ].copy()
 
 region_df.columns = ["시도", "시군구", "노인 1인 가구 비율", "폭염일수", "한파일수"]
+
+st.write("")
 
 table_col, profile_col = st.columns([1.8, 1], gap="large")
 

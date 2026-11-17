@@ -35,135 +35,148 @@ CSS = """
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
 
-html, body, [class*="css"], .stMarkdown, .stDataFrame {
+:root {
+    --bg: #0A0E16;
+    --glass: rgba(255,255,255,0.045);
+    --glass-strong: rgba(255,255,255,0.07);
+    --line: rgba(255,255,255,0.09);
+    --text: #F1F4F9;
+    --muted: #8F9AAB;
+    --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+#MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
+
+.stApp {
+    background:
+        radial-gradient(900px 480px at 8% -8%, rgba(56,189,248,0.13), transparent 60%),
+        radial-gradient(900px 480px at 96% -4%, rgba(248,113,113,0.13), transparent 60%),
+        var(--bg);
+    color: var(--text);
+}
+html, body, [class*="css"], .stMarkdown, .stApp {
     font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
 }
 .block-container {
-    padding-top: 2.2rem;
+    padding-top: 2rem;
     padding-bottom: 3rem;
-    max-width: 1180px;
+    max-width: 1120px;
 }
 
-.hero {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 28px 34px 26px 34px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 24px;
+/* ---------- 히어로 ---------- */
+.hero { padding: 36px 0 26px 0; animation: rise .7s var(--ease) both; }
+.hero .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--glass); border: 1px solid var(--line);
+    color: var(--muted); font-size: 0.82rem; font-weight: 500;
+    margin-bottom: 18px;
 }
-.hero::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #38BDF8 0%, #FBBF24 55%, #F87171 100%);
+.hero .pill i {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(90deg, #38BDF8, #F87171);
 }
 .hero h1 {
-    font-size: 1.9rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin: 0 0 8px 0;
-    padding: 0;
+    font-size: 2.5rem; font-weight: 800; letter-spacing: -0.035em;
+    line-height: 1.15; margin: 0 0 12px 0; padding: 0;
+    background: linear-gradient(90deg, #7DD3FC 0%, #FDE68A 50%, #FCA5A5 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; width: fit-content;
 }
-.hero .desc {
-    color: #9AA4B2;
-    line-height: 1.7;
-    font-size: 0.95rem;
-}
-
-.sec-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin: 28px 0 4px 0;
-}
-.sec-desc {
-    color: #9AA4B2;
-    font-size: 0.9rem;
-    margin-bottom: 16px;
+.hero .desc { color: var(--muted); line-height: 1.75; font-size: 0.98rem; max-width: 640px; }
+@keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- 섹션 제목 ---------- */
+.sec-title { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin: 36px 0 4px 0; }
+.sec-desc { color: var(--muted); font-size: 0.92rem; margin-bottom: 18px; }
+.panel-title { font-weight: 700; font-size: 1rem; margin: 24px 0 12px 0; letter-spacing: -0.01em; }
+
+/* ---------- 필터 (selectbox) ---------- */
+div[data-testid="stSelectbox"] label p { color: var(--muted); font-size: 0.85rem; font-weight: 500; }
+div[data-baseweb="select"] > div {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    min-height: 48px;
+    transition: background .2s var(--ease), border-color .2s var(--ease);
+}
+div[data-baseweb="select"] > div:hover { background: var(--glass-strong); }
+
+/* ---------- KPI ---------- */
 .kpi {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 18px 22px;
-    height: 100%;
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; padding: 22px 26px; height: 100%;
+    transition: background .25s var(--ease);
 }
-.kpi .label { color: #9AA4B2; font-size: 0.85rem; margin-bottom: 8px; }
-.kpi .value {
-    font-size: 1.9rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+.kpi:hover { background: var(--glass-strong); }
+.kpi .label { color: var(--muted); font-size: 0.88rem; margin-bottom: 12px; }
+.kpi .value { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.kpi .unit { font-size: 1rem; font-weight: 600; color: var(--muted); margin-left: 5px; }
+.kpi.alert {
+    background: linear-gradient(160deg, rgba(248,113,113,0.20), rgba(248,113,113,0.05));
+    border-color: rgba(248,113,113,0.35);
 }
-.kpi .unit { font-size: 1rem; font-weight: 600; color: #9AA4B2; margin-left: 4px; }
-.kpi.alert { border-color: rgba(248,113,113,0.45); }
-.kpi.alert .value { color: #F87171; }
+.kpi.alert .value { color: #FCA5A5; }
 
-.grade {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-left: 4px solid var(--c);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* ---------- 등급별 지역 수 ---------- */
+.dist {
+    background: var(--glass); border: 1px solid var(--line);
+    border-radius: 22px; padding: 20px;
 }
-.grade .name { font-weight: 700; color: var(--c); font-size: 0.95rem; }
-.grade .share { color: #9AA4B2; font-size: 0.8rem; margin-top: 2px; }
-.grade .count { font-size: 1.3rem; font-weight: 800; }
-.grade .count span { font-size: 0.85rem; font-weight: 600; color: #9AA4B2; margin-left: 3px; }
+.dist .bar { display: flex; gap: 3px; height: 14px; margin-bottom: 18px; }
+.dist .seg { background: var(--c); min-width: 4px; border-radius: 4px; }
+.dist .seg:first-child { border-radius: 8px 4px 4px 8px; }
+.dist .seg:last-child  { border-radius: 4px 8px 8px 4px; }
+.dist .seg:only-child  { border-radius: 8px; }
+.dist .item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0 8px 12px; border-left: 3px solid var(--c); margin-bottom: 6px;
+}
+.dist .item:last-child { margin-bottom: 0; }
+.dist .name { font-weight: 600; font-size: 0.92rem; }
+.dist .share { color: var(--muted); font-size: 0.78rem; margin-top: 1px; }
+.dist .count { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+.dist .count span { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-left: 3px; }
 
-.panel-title {
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 18px 0 10px 0;
+/* ---------- 상위 5개 ---------- */
+.rank { background: var(--glass); border: 1px solid var(--line); border-radius: 22px; padding: 8px; }
+.rank-row {
+    display: grid;
+    grid-template-columns: 32px 1fr auto auto;
+    align-items: center; gap: 12px;
+    padding: 11px 12px; border-radius: 14px;
+    transition: background .2s var(--ease);
 }
-
-.rank-wrap {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    overflow: hidden;
+.rank-row:hover { background: var(--glass-strong); }
+.rank-row .no {
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    border-radius: 9px; background: rgba(255,255,255,0.06);
+    color: var(--muted); font-weight: 700; font-size: 0.8rem;
 }
-.rank-table { width: 100%; border-collapse: collapse; }
-.rank-table th {
-    text-align: left;
-    color: #9AA4B2;
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 9px 12px;
-    background: rgba(255,255,255,0.03);
-    white-space: nowrap;
-}
-.rank-table td {
-    padding: 9px 12px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.88rem;
-    white-space: nowrap;
-}
-.rank-table .rk { font-weight: 700; color: #9AA4B2; width: 40px; }
-.rank-table .num { font-weight: 700; text-align: right; }
-.rank-table .chip {
-    display: inline-block;
-    padding: 2px 9px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--c);
-    background: color-mix(in srgb, var(--c) 16%, transparent);
+.rank-row.top .no { background: var(--c); color: #0A0E16; }
+.rank-row .area { font-weight: 600; font-size: 0.92rem; white-space: nowrap; }
+.rank-row .num { font-weight: 700; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.rank-row .chip {
+    padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 600;
+    color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent);
 }
 
-/* 지도 테두리 */
+/* ---------- 지도 ---------- */
 div[data-testid="stPlotlyChart"] {
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 22px;
     overflow: hidden;
+}
+
+@media (max-width: 720px) {
+    .hero h1 { font-size: 1.9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
 }
 </style>
 """
@@ -187,8 +200,9 @@ df, gdf = load_data()
 st.markdown(
     """
 <div class="hero">
-<h1>🗺️ 지역별 기후복지 취약지역 분석</h1>
-<div class="desc">전국 229개 시군구의 기후 위험과 복지 취약성을 분석해 지역별 지원 우선순위를 보여줍니다.</div>
+<div class="pill"><i></i>전국 229개 시군구</div>
+<h1>지역별 기후복지 취약지역 분석</h1>
+<div class="desc">기후 위험과 복지 취약성을 분석해 지역별 지원 우선순위를 지도에서 확인할 수 있습니다.</div>
 </div>
 """,
     unsafe_allow_html=True,
@@ -295,23 +309,29 @@ with map_col:
     )
 
     fig.update_traces(
-        marker_line_width=0.6,
-        marker_line_color="#0E1117"
+        marker_line_width=0.5,
+        marker_line_color="#0A0E16"
     )
 
     fig.update_layout(
         height=640,
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
-        paper_bgcolor="#161B26",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        hoverlabel=dict(
+            bgcolor="#161B26",
+            bordercolor="rgba(255,255,255,0.15)",
+            font=dict(color="#F1F4F9", size=13),
+        ),
         legend=dict(
             title_text="",
             orientation="h",
             yanchor="top",
-            y=0.98,
+            y=0.97,
             xanchor="left",
-            x=0.01,
-            bgcolor="rgba(22,27,38,0.85)",
-            font=dict(size=13, color="#E5E9F0"),
+            x=0.02,
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(size=13, color="#F1F4F9"),
         ),
     )
 
@@ -331,17 +351,24 @@ with side_col:
     )
     total = len(sido_df)
 
-    cards = ""
+    segs = ""
+    items = ""
     for grade in reversed(GRADE_ORDER):
         n = int(counts[grade])
         share = n / total * 100 if total else 0
-        cards += (
-            f'<div class="grade" style="--c:{GRADE_COLORS[grade]}">'
+        color = GRADE_COLORS[grade]
+        if n > 0:
+            segs += f'<div class="seg" style="--c:{color}; flex:{n}"></div>'
+        items += (
+            f'<div class="item" style="--c:{color}">'
             f'<div><div class="name">{grade}</div>'
             f'<div class="share">{share:.1f}%</div></div>'
             f'<div class="count">{n:,}<span>개</span></div></div>'
         )
-    st.markdown(cards, unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="dist"><div class="bar">{segs}</div>{items}</div>',
+        unsafe_allow_html=True,
+    )
 
     st.markdown('<div class="panel-title">점수 상위 5개 지역</div>', unsafe_allow_html=True)
 
@@ -353,18 +380,14 @@ with side_col:
 
     rows = ""
     for i, r in top5.iterrows():
-        color = GRADE_COLORS.get(r["지원_우선순위_등급"], "#9AA4B2")
+        color = GRADE_COLORS.get(r["지원_우선순위_등급"], "#8F9AAB")
+        top_cls = " top" if i < 3 else ""
         rows += (
-            f'<tr style="--c:{color}">'
-            f'<td class="rk">{i + 1}위</td>'
-            f'<td>{r["시군구"]}</td>'
-            f'<td class="num">{r["지원_우선순위_점수"]:.2f}</td>'
-            f'<td><span class="chip">{r["지원_우선순위_등급"]}</span></td>'
-            f'</tr>'
+            f'<div class="rank-row{top_cls}" style="--c:{color}">'
+            f'<div class="no">{i + 1}</div>'
+            f'<div class="area">{r["시군구"]}</div>'
+            f'<div class="num">{r["지원_우선순위_점수"]:.2f}</div>'
+            f'<div class="chip">{r["지원_우선순위_등급"]}</div>'
+            f'</div>'
         )
-    st.markdown(
-        '<div class="rank-wrap"><table class="rank-table">'
-        '<thead><tr><th>순위</th><th>지역</th><th>점수</th><th>등급</th></tr></thead>'
-        f'<tbody>{rows}</tbody></table></div>',
-        unsafe_allow_html=True,
-    )
+    st.markdown(f'<div class="rank">{rows}</div>', unsafe_allow_html=True)

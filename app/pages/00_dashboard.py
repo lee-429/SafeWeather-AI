@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 from pathlib import Path
 
 # ==========================================
@@ -31,11 +30,6 @@ GRADE_COLORS = {
     "우선지원": "#F87171",
 }
 
-BG = "#0E1117"
-CARD = "#161B26"
-BORDER = "rgba(255,255,255,0.08)"
-MUTED = "#9AA4B2"
-
 
 # ==========================================
 # 2. 스타일 (CSS)
@@ -45,225 +39,259 @@ CSS = """
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
 
-html, body, [class*="css"], .stMarkdown, .stDataFrame {
+:root {
+    --bg: #0A0E16;
+    --glass: rgba(255,255,255,0.045);
+    --glass-strong: rgba(255,255,255,0.07);
+    --line: rgba(255,255,255,0.09);
+    --text: #F1F4F9;
+    --muted: #8F9AAB;
+    --cold: #38BDF8;
+    --warm: #FBBF24;
+    --hot: #F87171;
+    --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* Streamlit 기본 요소 정리 */
+#MainMenu, footer, header[data-testid="stHeader"] { visibility: hidden; height: 0; }
+
+.stApp {
+    background:
+        radial-gradient(900px 480px at 8% -8%, rgba(56,189,248,0.13), transparent 60%),
+        radial-gradient(900px 480px at 96% -4%, rgba(248,113,113,0.13), transparent 60%),
+        var(--bg);
+    color: var(--text);
+}
+
+html, body, [class*="css"], .stMarkdown, .stApp {
     font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
 }
 
 .block-container {
-    padding-top: 2.2rem;
+    padding-top: 2rem;
     padding-bottom: 3rem;
-    max-width: 1180px;
+    max-width: 1120px;
 }
 
-/* 헤더 영역: 한파(파랑)에서 폭염(빨강)으로 이어지는 띠 */
+/* ---------- 히어로 ---------- */
 .hero {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 34px 36px 30px 36px;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 28px;
+    padding: 44px 0 36px 0;
+    animation: rise .7s var(--ease) both;
 }
-.hero::before {
-    content: "";
-    position: absolute;
-    left: 0; top: 0; right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #38BDF8 0%, #FBBF24 55%, #F87171 100%);
+.hero .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 22px;
+}
+.hero .pill i {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(90deg, var(--cold), var(--hot));
 }
 .hero h1 {
-    font-size: 2.1rem;
+    font-size: 3.1rem;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    margin: 0 0 6px 0;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    margin: 0 0 16px 0;
     padding: 0;
+    background: linear-gradient(90deg, #7DD3FC 0%, #FDE68A 50%, #FCA5A5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
 }
 .hero .sub {
-    font-size: 1.05rem;
+    font-size: 1.12rem;
     font-weight: 600;
-    color: #E5E9F0;
-    margin-bottom: 12px;
+    color: var(--text);
+    margin-bottom: 10px;
 }
 .hero .desc {
-    color: #9AA4B2;
-    line-height: 1.7;
-    font-size: 0.95rem;
-    max-width: 720px;
+    color: var(--muted);
+    line-height: 1.75;
+    font-size: 0.98rem;
+    max-width: 640px;
+}
+@keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 섹션 제목 */
+/* ---------- 섹션 제목 ---------- */
 .sec-title {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    margin: 34px 0 4px 0;
+    letter-spacing: -0.02em;
+    margin: 44px 0 4px 0;
 }
 .sec-desc {
-    color: #9AA4B2;
-    font-size: 0.9rem;
-    margin-bottom: 16px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 18px;
 }
 
-/* KPI 카드 */
+/* ---------- KPI ---------- */
 .kpi {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 20px 22px;
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 24px 26px;
     height: 100%;
+    transition: background .25s var(--ease), border-color .25s var(--ease);
 }
-.kpi .label {
-    color: #9AA4B2;
-    font-size: 0.85rem;
-    margin-bottom: 8px;
-}
+.kpi:hover { background: var(--glass-strong); }
+.kpi .label { color: var(--muted); font-size: 0.88rem; margin-bottom: 14px; }
 .kpi .value {
-    font-size: 2rem;
+    font-size: 2.3rem;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+    letter-spacing: -0.03em;
+    line-height: 1;
 }
 .kpi .unit {
     font-size: 1rem;
     font-weight: 600;
-    color: #9AA4B2;
-    margin-left: 4px;
+    color: var(--muted);
+    margin-left: 5px;
 }
 .kpi.alert {
-    border-color: rgba(248,113,113,0.45);
+    background: linear-gradient(160deg, rgba(248,113,113,0.20), rgba(248,113,113,0.05));
+    border-color: rgba(248,113,113,0.35);
 }
-.kpi.alert .value {
-    color: #F87171;
-}
+.kpi.alert .value { color: #FCA5A5; }
 
-/* 등급 카드 */
-.grade {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-left: 4px solid var(--c);
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin-bottom: 10px;
+/* ---------- 등급 분포 ---------- */
+.dist {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 26px;
+}
+.dist .bar {
     display: flex;
-    justify-content: space-between;
+    gap: 4px;
+    height: 54px;
+}
+.dist .seg {
+    display: flex;
     align-items: center;
-}
-.grade .name {
+    justify-content: center;
+    min-width: 6px;
+    color: #0A0E16;
     font-weight: 700;
-    color: var(--c);
-    font-size: 0.95rem;
-}
-.grade .share {
-    color: #9AA4B2;
-    font-size: 0.8rem;
-    margin-top: 2px;
-}
-.grade .count {
-    font-size: 1.4rem;
-    font-weight: 800;
-}
-.grade .count span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9AA4B2;
-    margin-left: 3px;
-}
-
-/* 기능 안내 카드 */
-.feature {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 22px;
-    height: 100%;
-}
-.feature .icon {
-    font-size: 1.6rem;
-    margin-bottom: 10px;
-}
-.feature .title {
-    font-weight: 700;
-    font-size: 1.05rem;
-    margin-bottom: 8px;
-}
-.feature .text {
-    color: #9AA4B2;
     font-size: 0.9rem;
-    line-height: 1.65;
+    background: var(--c);
+    transition: filter .2s var(--ease), transform .2s var(--ease);
 }
+.dist .seg:first-child { border-radius: 14px 5px 5px 14px; }
+.dist .seg:last-child  { border-radius: 5px 14px 14px 5px; }
+.dist .seg:only-child  { border-radius: 14px; }
+.dist .seg:hover { filter: brightness(1.12); transform: translateY(-2px); }
+.dist .legend {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 22px;
+}
+.dist .item { padding-left: 14px; border-left: 3px solid var(--c); }
+.dist .item .name { color: var(--muted); font-size: 0.85rem; margin-bottom: 4px; }
+.dist .item .count { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.dist .item .count span { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-left: 3px; }
+.dist .item .share { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
 
-/* 상위 10개 표 (잘림 없이 전체 표시) */
-.rank-wrap {
-    background: #161B26;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    overflow: hidden;
+/* ---------- 상위 10개 ---------- */
+.rank {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 10px;
 }
-.rank-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.rank-table th {
-    text-align: left;
-    color: #9AA4B2;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 11px 14px;
-    background: rgba(255,255,255,0.03);
-    white-space: nowrap;
-}
-.rank-table td {
-    padding: 10px 14px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 0.92rem;
-    white-space: nowrap;
-    vertical-align: middle;
-}
-.rank-table .rk {
-    font-weight: 700;
-    color: #9AA4B2;
-    width: 44px;
-}
-.rank-table .score {
-    display: flex;
+.rank-row {
+    display: grid;
+    grid-template-columns: 44px 1.1fr 2fr 84px;
     align-items: center;
-    gap: 10px;
-    min-width: 150px;
+    gap: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    transition: background .2s var(--ease);
 }
-.rank-table .track {
-    flex: 1;
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
+.rank-row:hover { background: var(--glass-strong); }
+.rank-row .no {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 0.85rem;
 }
-.rank-table .fill {
+.rank-row.top .no { background: var(--c); color: #0A0E16; }
+.rank-row .area { font-weight: 600; font-size: 0.97rem; white-space: nowrap; }
+.rank-row .area small { color: var(--muted); font-weight: 500; margin-right: 6px; }
+.rank-row .meter { display: flex; align-items: center; gap: 14px; }
+.rank-row .track { flex: 1; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.07); }
+.rank-row .fill {
     height: 100%;
     border-radius: 999px;
-    background: var(--c);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, transparent), var(--c));
 }
-.rank-table .num {
-    font-weight: 700;
-    min-width: 44px;
-    text-align: right;
-}
-.rank-table .chip {
-    display: inline-block;
-    padding: 2px 10px;
+.rank-row .num { font-weight: 700; min-width: 46px; text-align: right; font-variant-numeric: tabular-nums; }
+.rank-row .chip {
+    justify-self: end;
+    padding: 4px 12px;
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 600;
     color: var(--c);
-    background: color-mix(in srgb, var(--c) 16%, transparent);
+    background: color-mix(in srgb, var(--c) 15%, transparent);
 }
+
+/* ---------- 기능 안내 ---------- */
+.feature {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 26px;
+    height: 100%;
+    transition: background .25s var(--ease), transform .25s var(--ease);
+}
+.feature:hover { background: var(--glass-strong); transform: translateY(-3px); }
+.feature .icon {
+    width: 46px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.07);
+    margin-bottom: 16px;
+}
+.feature .title { font-weight: 700; font-size: 1.08rem; margin-bottom: 8px; letter-spacing: -0.01em; }
+.feature .text { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
 
 .footer {
     text-align: center;
-    color: #6B7482;
+    color: #657084;
     font-size: 0.8rem;
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 56px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+}
+
+/* ---------- 모바일 ---------- */
+@media (max-width: 720px) {
+    .hero h1 { font-size: 2.2rem; }
+    .dist .legend { grid-template-columns: repeat(2, 1fr); }
+    .rank-row { grid-template-columns: 36px 1fr 70px; }
+    .rank-row .meter { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
 }
 </style>
 """
@@ -287,9 +315,10 @@ def load_data():
 st.markdown(
     """
 <div class="hero">
-<h1>🌤️ SafeWeather-AI</h1>
-<div class="sub">AI 기반 기후재난 복지 취약지역 분석 및 지원 우선순위 추천 시스템</div>
-<div class="desc">폭염과 한파에 취약한 지역을 찾아냅니다. 고령인구와 노인 1인 가구, 기후 위험, 쉼터 현황을 종합해 지역별 지원 우선순위를 제시합니다.</div>
+<div class="pill"><i></i>폭염 · 한파 복지 취약지역 분석</div>
+<h1>SafeWeather-AI</h1>
+<div class="sub">기후재난에 가장 먼저 지원이 필요한 지역을 찾아드립니다</div>
+<div class="desc">고령인구와 노인 1인 가구, 기후 위험, 쉼터 현황을 종합해 전국 시군구의 지원 우선순위를 제시합니다.</div>
 </div>
 """,
     unsafe_allow_html=True,
@@ -328,7 +357,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-k1, k2, k3 = st.columns(3)
+k1, k2, k3 = st.columns(3, gap="medium")
 
 k1.markdown(
     f'<div class="kpi"><div class="label">분석 대상 지역</div>'
@@ -357,68 +386,27 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-chart_col, summary_col = st.columns([2.2, 1], gap="large")
-
-with chart_col:
-    chart_df = grade_counts.reset_index()
-    chart_df.columns = ["지원 우선순위", "지역 수"]
-
-    fig = px.bar(
-        chart_df,
-        x="지원 우선순위",
-        y="지역 수",
-        text="지역 수",
-        color="지원 우선순위",
-        color_discrete_map=GRADE_COLORS,
-        category_orders={"지원 우선순위": GRADE_ORDER},
+segs = ""
+legend = ""
+for grade in GRADE_ORDER:
+    n = int(grade_counts[grade])
+    share = n / total * 100 if total else 0
+    color = GRADE_COLORS[grade]
+    if n > 0:
+        label = f"{share:.0f}%" if share >= 7 else ""
+        segs += f'<div class="seg" style="--c:{color}; flex:{n}">{label}</div>'
+    legend += (
+        f'<div class="item" style="--c:{color}">'
+        f'<div class="name">{grade}</div>'
+        f'<div class="count">{n:,}<span>개</span></div>'
+        f'<div class="share">전체의 {share:.1f}%</div></div>'
     )
 
-    fig.update_traces(
-        textposition="outside",
-        textfont=dict(size=14, color="#E5E9F0"),
-        marker_line_width=0,
-        cliponaxis=False,
-        hovertemplate="%{x}<br>%{y}개 지역<extra></extra>",
-    )
-
-    fig.update_layout(
-        template="plotly_dark",
-        height=340,
-        bargap=0.45,
-        showlegend=False,
-        margin=dict(t=20, b=10, l=10, r=10),
-        xaxis=dict(title=None, showgrid=False, tickfont=dict(size=14)),
-        yaxis=dict(
-            title=None,
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.06)",
-            zeroline=False,
-            showticklabels=False,
-            range=[0, max(grade_counts.max(), 1) * 1.2],
-        ),
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True,
-        config={"displayModeBar": False},
-    )
-
-with summary_col:
-    cards = ""
-    # 우선지원이 가장 위에 오도록 역순 표시
-    for grade in reversed(GRADE_ORDER):
-        n = int(grade_counts[grade])
-        share = n / total * 100 if total else 0
-        cards += (
-            f'<div class="grade" style="--c:{GRADE_COLORS[grade]}">'
-            f'<div><div class="name">{grade}</div>'
-            f'<div class="share">전체의 {share:.1f}%</div></div>'
-            f'<div class="count">{n:,}<span>개</span></div></div>'
-        )
-    st.markdown(cards, unsafe_allow_html=True)
+st.markdown(
+    f'<div class="dist"><div class="bar">{segs}</div>'
+    f'<div class="legend">{legend}</div></div>',
+    unsafe_allow_html=True,
+)
 
 
 # ==========================================
@@ -437,78 +425,25 @@ top10 = (
     .reset_index(drop=True)
 )
 top10.insert(0, "순위", range(1, len(top10) + 1))
-top10["지역"] = top10["시도"] + " " + top10["시군구"]
 
-bar_col, table_col = st.columns([1, 1.15], gap="large")
-
-with bar_col:
-    fig2 = px.bar(
-        top10,
-        x="지원_우선순위_점수",
-        y="지역",
-        orientation="h",
-        text="지원_우선순위_점수",
-        color="지원_우선순위_등급",
-        color_discrete_map=GRADE_COLORS,
-        category_orders={"지원_우선순위_등급": GRADE_ORDER},
+max_score = top10["지원_우선순위_점수"].max()
+rows = ""
+for _, r in top10.iterrows():
+    color = GRADE_COLORS.get(r["지원_우선순위_등급"], "#8F9AAB")
+    width = r["지원_우선순위_점수"] / max_score * 100 if max_score else 0
+    top_cls = " top" if r["순위"] <= 3 else ""
+    rows += (
+        f'<div class="rank-row{top_cls}" style="--c:{color}">'
+        f'<div class="no">{r["순위"]}</div>'
+        f'<div class="area"><small>{r["시도"]}</small>{r["시군구"]}</div>'
+        f'<div class="meter"><div class="track">'
+        f'<div class="fill" style="width:{width:.1f}%"></div></div>'
+        f'<div class="num">{r["지원_우선순위_점수"]:.2f}</div></div>'
+        f'<div class="chip">{r["지원_우선순위_등급"]}</div>'
+        f'</div>'
     )
 
-    fig2.update_traces(
-        texttemplate="%{text:.2f}",
-        textposition="outside",
-        textfont=dict(size=12, color="#E5E9F0"),
-        marker_line_width=0,
-        cliponaxis=False,
-        hovertemplate="%{y}<br>%{x:.2f}점<extra></extra>",
-    )
-
-    fig2.update_layout(
-        template="plotly_dark",
-        height=440,
-        bargap=0.35,
-        showlegend=False,
-        margin=dict(t=10, b=10, l=10, r=50),
-        xaxis=dict(
-            title=None,
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.06)",
-            zeroline=False,
-            showticklabels=False,
-            range=[0, top10["지원_우선순위_점수"].max() * 1.15],
-        ),
-        yaxis=dict(title=None, autorange="reversed", tickfont=dict(size=13)),
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-    )
-
-    st.plotly_chart(
-        fig2,
-        use_container_width=True,
-        config={"displayModeBar": False},
-    )
-
-with table_col:
-    max_score = top10["지원_우선순위_점수"].max()
-    rows = ""
-    for _, r in top10.iterrows():
-        color = GRADE_COLORS.get(r["지원_우선순위_등급"], "#9AA4B2")
-        width = r["지원_우선순위_점수"] / max_score * 100 if max_score else 0
-        rows += (
-            f'<tr style="--c:{color}">'
-            f'<td class="rk">{r["순위"]}위</td>'
-            f'<td>{r["시도"]} {r["시군구"]}</td>'
-            f'<td><div class="score"><div class="track">'
-            f'<div class="fill" style="width:{width:.1f}%"></div></div>'
-            f'<div class="num">{r["지원_우선순위_점수"]:.2f}</div></div></td>'
-            f'<td><span class="chip">{r["지원_우선순위_등급"]}</span></td>'
-            f'</tr>'
-        )
-    st.markdown(
-        '<div class="rank-wrap"><table class="rank-table">'
-        '<thead><tr><th>순위</th><th>지역</th><th>점수</th><th>등급</th></tr></thead>'
-        f'<tbody>{rows}</tbody></table></div>',
-        unsafe_allow_html=True,
-    )
+st.markdown(f'<div class="rank">{rows}</div>', unsafe_allow_html=True)
 
 
 # ==========================================
