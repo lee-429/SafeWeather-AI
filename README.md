@@ -94,12 +94,12 @@ K-Means 알고리즘을 활용하여 지역별 기후 및 복지 취약 특성�
 | 데이터 수집 | 공공데이터포털, KOSIS, 기상청 |
 | 협업 및 형상 관리 | Git, GitHub |
 
-## 6. 최종 발표 자료
+## 6. 프로젝트 문서
 
 - 최종 발표 자료: [최종 발표 PPT](reports/ppt/빅데이터_프로젝트_발표.pptx)
 
 ## 7. 시연 영상
-
+📄 [아이디어 제안서](reports/proposal/아이디어_제안서.pdf)
 🎬 [SafeWeather-AI 시연 영상 바로가기](https://www.youtube.com/watch?v=x0G5gzTMapg)
 
 ## 8. 팀원 소개
